@@ -10,6 +10,14 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
+let exampleBook = new Book("test", "book", 165, false);
+myLibrary.push(exampleBook);
+
+Book.prototype.changeReadStatus = (book) => {
+  book.read = true;
+  generateCard(myLibrary);
+};
+
 function addBookToLibrary(title, author, pages, read) {
   let userBook = new Book(title, author, pages, read);
   myLibrary.push(userBook);
@@ -30,15 +38,15 @@ function generateCard(library) {
     let readBtn = document.createElement("button");
 
     card.className = "card";
-    removeBtn.textContent = "delete";
+    removeBtn.textContent = "Delete";
     removeBtn.className = "delete";
     removeBtn.setAttribute("data", index);
 
-    readBtn.textContent = "I have read it!";
+    readBtn.textContent = "Update";
     readBtn.className = "read";
-    cardHeader.textContent = book.title;
-    cardText.textContent = `Written by ${book.author}, is ${book.pages} long, ${
-      book.read ? "I have read it" : "I have not read it"
+    cardHeader.innerHTML = `<strong>${book.title}</strong> by <em>${book.author}</em>`;
+    cardText.textContent = `This book is ${book.pages} long and ${
+      book.read ? "I have read it" : "I have not read it yet"
     }`;
 
     card.appendChild(cardHeader);
@@ -75,7 +83,8 @@ function removeCard(index) {
 
 function readBook(e) {
   let data = parseInt(e.target.previousSibling.getAttribute("data"));
-  myLibrary[data].read = true;
+  console.log(myLibrary[data]);
+  myLibrary[data].changeReadStatus(myLibrary[data]);
   generateCard(myLibrary);
 }
 
@@ -101,5 +110,5 @@ function addBook(e) {
   generateCard(myLibrary);
   form.classList.toggle("hidden");
 }
-
+generateCard(myLibrary);
 newBookButton.addEventListener("click", showForm);

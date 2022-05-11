@@ -130,6 +130,14 @@ table {
 
 /* end of reset */
 
+em {
+  font-style: italic;
+}
+
+body {
+  background: #f1faee;
+}
+
 .hidden {
   display: none;
 }
@@ -139,9 +147,10 @@ ul {
   justify-content: space-between;
   align-items: center;
   padding: 20px 10px;
-  background-color: #4aa3a2;
+  background-color: #1d3557;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  color: white;
 }
 
 li span {
@@ -174,22 +183,55 @@ form div input {
   background-color: #a7e0e0;
 }
 
-.card {
-  border: 1px solid black;
-  width: minMa;
-  padding: 30px;
-  margin: 10px 10px;
+.container {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  background-color: #f1faee;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 30%;
+  height: 20%;
+  max-height: 200px;
+  max-width: 250px;
+  margin: 25px auto;
+  padding: 30px;
+  border-radius: 5px;
+  background-color: #a8dadc;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .card h3 {
   text-align: center;
   font-size: 1.4rem;
+  margin-bottom: 10px;
 }
 
 .cardBtns {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   margin: 10px;
+}
+
+button {
+  background-color: #1d3557;
+  padding: 0.6rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: bolder;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 100px;
+}
+
+button:hover {
+  transition: all 0.3s;
+  width: 120px;
+  background-color: #457b9d;
 }
