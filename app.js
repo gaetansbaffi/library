@@ -1,114 +1,111 @@
-let myLibrary = [];
-
 const container = document.querySelector(".container");
 const newBookButton = document.querySelector(".newBtn");
-
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
-
-let exampleBook = new Book("test", "book", 165, false);
-myLibrary.push(exampleBook);
-
-Book.prototype.changeReadStatus = (book) => {
-  book.read = true;
-  generateCard(myLibrary);
-};
-
-function addBookToLibrary(title, author, pages, read) {
-  let userBook = new Book(title, author, pages, read);
-  myLibrary.push(userBook);
-}
-
-//UI
-function generateCard(library) {
-  let index = 0;
-  container.innerHTML = "";
-
-  library.forEach((book) => {
-    let card = document.createElement("div");
-    let cardHeader = document.createElement("h3");
-    let cardText = document.createElement("p");
-    let btns = document.createElement("div");
-    btns.className = "cardBtns";
-    let removeBtn = document.createElement("button");
-    let readBtn = document.createElement("button");
-
-    card.className = "card";
-    removeBtn.textContent = "Delete";
-    removeBtn.className = "delete";
-    removeBtn.setAttribute("data", index);
-
-    readBtn.textContent = "Update";
-    readBtn.className = "read";
-    cardHeader.innerHTML = `<strong>${book.title}</strong> by <em>${book.author}</em>`;
-    cardText.textContent = `This book is ${book.pages} long and ${
-      book.read ? "I have read it" : "I have not read it yet"
-    }`;
-
-    card.appendChild(cardHeader);
-    card.appendChild(cardText);
-    card.appendChild(btns);
-    btns.appendChild(removeBtn);
-    btns.appendChild(readBtn);
-    container.appendChild(card);
-    index++;
-  });
-
-  let deleteBtns = document.querySelectorAll(".delete");
-
-  deleteBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      removeCard(e);
-    });
-  });
-  let readBtns = document.querySelectorAll(".read");
-
-  readBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      readBook(e);
-    });
-  });
-}
-
-function removeCard(index) {
-  let button = index.target;
-  console.log(button.getAttribute("data"));
-  myLibrary.splice(parseInt(button.getAttribute("data")), 1);
-  generateCard(myLibrary);
-}
-
-function readBook(e) {
-  let data = parseInt(e.target.previousSibling.getAttribute("data"));
-  console.log(myLibrary[data]);
-  myLibrary[data].changeReadStatus(myLibrary[data]);
-  generateCard(myLibrary);
-}
-
-function showForm() {
-  let form = document.querySelector("form");
-  let submitBtn = document.querySelector(".submitBtn");
-  form.classList.toggle("hidden");
-  submitBtn.addEventListener("click", addBook);
-}
-
-function addBook(e) {
-  const form = document.querySelector("#myForm");
-  let formData = new FormData(form);
-  e.preventDefault();
-  let book = {};
-  for (const pair of formData) {
-    book[pair[0]] = pair[1];
+const form = document.querySelector("form");
+class Library {
+  constructor(books) {
+    this.books = books;
   }
-  book.read ? (book.read = true) : (book.read = false);
-  book = new Book(book.title, book.author, book.pages, book.read);
-  myLibrary.push(book);
-  container.innerHTML = "";
-  generateCard(myLibrary);
-  form.classList.toggle("hidden");
+
+  displayBooks() {
+    container.innerHTML = "";
+    for (const book of this.books) {
+      let card = document.createElement("div");
+      let title = document.createElement("h4");
+      let author = document.createElement("h4");
+      let infos = document.createElement("p");
+      let removeBtn = document.createElement("button");
+      let updateBtn = document.createElement("button");
+
+      card.className = "card";
+      removeBtn.textContent = "Delete";
+      removeBtn.className = "delete";
+      updateBtn.textContent = "Update";
+      updateBtn.className = "update";
+      title.textContent = book.title;
+      author.textContent = book.author;
+      infos.textContent = `This book is ${book.pages} pages long and ${
+        book.read ? "i have read it" : "i have not read it"
+      }`;
+      card.append(title);
+      card.append(author);
+      card.append(infos);
+      card.append(removeBtn);
+      card.append(updateBtn);
+      container.append(card);
+      removeBtn.addEventListener("click", (e) => this.removeBook(e));
+      updateBtn.addEventListener("click", (e) => this.updateBook(e));
+    }
+  }
+
+  addBook() {
+    //Show Form
+    form.classList.toggle("hidden");
+
+    let submitBtn = document.querySelector(".submitBtn");
+    submitBtn.addEventListener("click", (e) => createBook(e));
+
+    const createBook = (e) => {
+      let data = new FormData(form);
+      e.preventDefault();
+      let book = new Book();
+      for (const item of data) {
+        console.log(item);
+        console.log((book[item[0]] = item[1]));
+      }
+      form.classList.toggle("hidden");
+      myLibrary.books.push(book);
+      console.log(this);
+      return this.displayBooks();
+    };
+  }
+
+  removeBook(e) {
+    let bookTitle = e.target.parentElement.firstChild.textContent;
+    for (let index = 0; index < this.books.length; index++) {
+      if (bookTitle === this.books[index].title) {
+        this.books.splice(index, 1);
+        this.displayBooks();
+      }
+    }
+  }
+
+  updateBook(e) {
+    let bookTitle = e.target.parentElement.firstChild.textContent;
+    for (let index = 0; index < this.books.length; index++) {
+      if (bookTitle === this.books[index].title) {
+        if (this.books[index]._read === false) {
+          this.books[index]._read = true;
+        } else this.books[index]._read = false;
+
+        this.displayBooks();
+      }
+    }
+  }
 }
-generateCard(myLibrary);
-newBookButton.addEventListener("click", showForm);
+
+class Book {
+  constructor(title, author, pages, read = false) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+
+  get read() {
+    return this._read;
+  }
+
+  set read(value) {
+    if (value === "on") {
+      this._read = true;
+    } else {
+      this._read = false;
+    }
+  }
+}
+
+let LOTR = new Book("the lord of the rings", "JRR Tolkien", 300, true);
+
+let myLibrary = new Library([LOTR]);
+myLibrary.displayBooks();
+newBookButton.addEventListener("click", () => myLibrary.addBook());
